@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "sec-rag-experiment"
+version = "0.1.0"
+description = "An experimental RAG implementation for SEC documents"
+authors = ["Chris Howe howechristopher5@gmail.com"]
+readme = "README.md"
+packages = [
+	{ include = "notebook.ipynb", from = "./"},
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.9"
+langchain = "^0.0.348"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.27.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
