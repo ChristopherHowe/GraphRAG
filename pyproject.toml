@@ -12,6 +12,8 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.9"
 langchain = "^0.0.348"
+pdfplumber="^0.11.6"
+pandas="^2.2.3"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.27.1"
