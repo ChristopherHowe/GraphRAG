@@ -1,17 +1,37 @@
-import json
+from nltk.tokenize import sent_tokenize
+import nltk
 
+def extract_triplets(text):
+    triplets = []
+    relation, subject, relation, object_ = '', '', '', ''
+    text = text.strip()
+    current = 'x'
+    for token in text.replace("<s>", "").replace("<pad>", "").replace("</s>", "").split():
+        if token == "<triplet>":
+            current = 't'
+            if relation != '':
+                triplets.append({'head': subject.strip(), 'type': relation.strip(),'tail': object_.strip()})
+                relation = ''
+            subject = ''
+        elif token == "<subj>":
+            current = 's'
+            if relation != '':
+                triplets.append({'head': subject.strip(), 'type': relation.strip(),'tail': object_.strip()})
+            object_ = ''
+        elif token == "<obj>":
+            current = 'o'
+            relation = ''
+        else:
+            if current == 't':
+                subject += ' ' + token
+            elif current == 's':
+                object_ += ' ' + token
+            elif current == 'o':
+                relation += ' ' + token
+    if subject != '' and relation != '' and object_ != '':
+        triplets.append({'head': subject.strip(), 'type': relation.strip(),'tail': object_.strip()})
+    return triplets
 
-def insert_article(cur, topic, content):
-    cur.execute("""
-        INSERT INTO articles (topic, content)
-        VALUES (%s, %s)
-        RETURNING id;
-    """, (topic, content))
-    return cur.fetchone()[0]
-
-def insert_question(cur, question_id, article_id, question, answers, is_impossible):
-    answers_json = json.dumps(answers) if answers else json.dumps([])
-    cur.execute("""
-        INSERT INTO questions (id, article_id, question, answers, is_impossible)
-        VALUES (%s, %s, %s, %s, %s);
-    """, (question_id, article_id, question, answers_json, is_impossible))
+def get_sentances(text):
+    nltk.download('punkt_tab')
+    return sent_tokenize(text)

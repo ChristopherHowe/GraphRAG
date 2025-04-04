@@ -15,6 +15,9 @@ langchain = "^0.0.348"
 pdfplumber="^0.11.6"
 pandas="^2.2.3"
 psycopg2-binary="2.9.10"
+torch="^2.6.0"
+transformers="^4.50.3"
+nltk="^3.9.1"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.27.1"
