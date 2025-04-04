@@ -5,7 +5,7 @@ description = "An experimental RAG implementation for SEC documents"
 authors = ["Chris Howe howechristopher5@gmail.com"]
 readme = "README.md"
 packages = [
-	{ include = "notebook.ipynb", from = "./"},
+	{ include = "database-creation.ipynb", from = "./"},
 ]
 
 
@@ -14,6 +14,7 @@ python = "^3.9"
 langchain = "^0.0.348"
 pdfplumber="^0.11.6"
 pandas="^2.2.3"
+psycopg2-binary="2.9.10"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.27.1"
