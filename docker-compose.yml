@@ -3,10 +3,30 @@ services:
   db:
     image: postgres:14
     environment:
-      POSTGRES_USER: squaduser
-      POSTGRES_PASSWORD: squadpass
-      POSTGRES_DB: squaddb
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports: 
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+  neo4j:
+    image: neo4j:latest
+    volumes:
+      - neo4j-logs:/logs
+      - neo4j-config:/config
+      - neo4j-data:/data
+      - neo4j-plugins:/plugins
+    environment:
+        - NEO4J_AUTH=${NEO4J_USER}/${NEO4J_PASSWORD}
+    ports:
+      - "${NEO4J_HTTP_PORT}:7474"
+      - "${NEO4J_BOLT_PORT}:7687"
+    restart: always
+
+volumes:
+  postgres-data:
+  neo4j-logs:
+  neo4j-config:
+  neo4j-data:
+  neo4j-plugins:
