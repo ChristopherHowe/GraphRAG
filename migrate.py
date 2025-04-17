@@ -1,15 +1,7 @@
 import os
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-
-def get_db_connection():
-    return psycopg2.connect(
-        dbname="squaddb",
-        user="squaduser",
-        password="squadpass",
-        host="localhost",
-        port="5432"
-    )
+from db_funcs import get_db_con
 
 def ensure_migration_table(conn):
     with conn.cursor() as cur:
@@ -38,7 +30,7 @@ def apply_migration(conn, filename, content):
     conn.commit()
 
 def main():
-    conn = get_db_connection()
+    conn = get_db_con()
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     
     ensure_migration_table(conn)

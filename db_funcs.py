@@ -1,5 +1,18 @@
 import json
+import dotenv
+import psycopg2
+import os
+dotenv.load_dotenv()
 
+def get_db_con():
+    conn = psycopg2.connect(
+        dbname=os.getenv('DB_NAME'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+        host="localhost",
+        port=os.getenv('DB_PORT')
+    )
+    return conn
 
 def insert_article(cur, topic, content):
     cur.execute("""
