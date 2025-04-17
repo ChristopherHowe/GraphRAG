@@ -4,20 +4,19 @@ version = "0.1.0"
 description = "An experimental RAG implementation for SEC documents"
 authors = ["Chris Howe howechristopher5@gmail.com"]
 readme = "README.md"
-packages = [
-	{ include = "database-creation.ipynb", from = "./"},
-]
-
+packages = [{ include = "database-creation.ipynb", from = "./" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 langchain = "^0.0.348"
-pdfplumber="^0.11.6"
-pandas="^2.2.3"
-psycopg2-binary="2.9.10"
-torch="^2.6.0"
-transformers="^4.50.3"
-nltk="^3.9.1"
+pdfplumber = "^0.11.6"
+pandas = "^2.2.3"
+psycopg2-binary = "2.9.10"
+torch = "^2.6.0"
+transformers = "^4.50.3"
+nltk = "^3.9.1"
+dotenv = "^0.9.9"
+neo4j = "^5.28.1"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.27.1"
