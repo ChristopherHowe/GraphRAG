@@ -5,7 +5,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-    ports: 
+    ports:
       - "${DB_PORT}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -17,10 +17,20 @@ services:
       - neo4j-data:/data
       - neo4j-plugins:/plugins
     environment:
-        - NEO4J_AUTH=${NEO4J_USER}/${NEO4J_PASSWORD}
+      - NEO4J_AUTH=${NEO4J_USER}/${NEO4J_PASSWORD}
     ports:
       - "${NEO4J_HTTP_PORT}:7474"
       - "${NEO4J_BOLT_PORT}:7687"
+    restart: always
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "${QDRANT_PORT}:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    environment:
+      - QDRANT_ALLOW_RECOVERY=true
     restart: always
 
 volumes:
@@ -29,3 +39,4 @@ volumes:
   neo4j-config:
   neo4j-data:
   neo4j-plugins:
+  qdrant-data:
