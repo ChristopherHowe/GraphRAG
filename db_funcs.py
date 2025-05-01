@@ -30,5 +30,8 @@ def insert_question(cur, question_id, article_id, question, answers, is_impossib
     """, (question_id, article_id, question, answers_json, is_impossible))
 
 def get_all_content(cur):
-    cur.execute("SELECT content FROM articles;")
-    return [row[0] for row in cur.fetchall()]
+    cur.execute("SELECT id, content FROM articles;")
+    result=cur.fetchall()
+    content_ids=[row[0] for row in result]
+    content= [row[1] for row in result]
+    return content_ids, content
