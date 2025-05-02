@@ -11,22 +11,26 @@ class Neo4j_Driver:
         password = os.getenv('NEO4J_PASSWORD')
         self.driver=GraphDatabase.driver(uri, auth=(user, password))
 
-    def insert_relationship(self, subject, subject_type, predicate, object, object_type):
+    def insert_relationship(self, subject, subject_type, predicate, object, object_type, content_id):
         """
         Insert a relationship triplet into Neo4j.
         Creates nodes if they don't exist and connects them with the predicate relationship.
+        Updates the content_id array on both subject and object nodes.
         """
         with self.driver.session() as session:
             query = """
                 MERGE (s:`{subject_type}` {{name: $subject}})
+                ON CREATE SET s.content_ids = [$content_id]
+                ON MATCH SET s.content_ids = CASE WHEN NOT $content_id IN s.content_ids THEN s.content_ids + $content_id ELSE s.content_ids END
                 MERGE (o:`{object_type}` {{name: $object}})
+                ON CREATE SET o.content_ids = [$content_id]
+                ON MATCH SET o.content_ids = CASE WHEN NOT $content_id IN o.content_ids THEN o.content_ids + $content_id ELSE o.content_ids END
                 MERGE (s)-[r:`{predicate}`]->(o)
                 RETURN s, r, o
             """.format(subject_type=subject_type, object_type=object_type, predicate=predicate)
 
-
             try:
-                result = session.run(query, subject=subject, object=object)
+                result = session.run(query, subject=subject, object=object, content_id=content_id)
                 return result.single()
             except Exception as e:
                 print(f"Error inserting relationship: {e}")
