@@ -1,4 +1,24 @@
 # GraphRAG
+# Database creations and initial migrations
+This project uses a SQL relational database to store the source data.
+To create the database preform the following:
+
+1. start a postgres container 
+```bash
+docker compose up -d
+```
+2. Install python dependencies
+```bash
+conda create -n GraphRag
+conda activate GraphRag
+conda install pip
+pip install .
+```
+3. apply database migrations to create the correct tables
+```bash
+python3 migrate.py
+```
+
 ## Data
 ## How Text Chunking is Performed
 Chunking is very important
