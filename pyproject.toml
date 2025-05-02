@@ -4,7 +4,10 @@ version = "0.1.0"
 description = "An experimental RAG implementation for SEC documents"
 authors = ["Chris Howe howechristopher5@gmail.com"]
 readme = "README.md"
-packages = [{ include = "database-creation.ipynb", from = "./" }]
+packages = [
+    { include = "database-creation.ipynb", from = "./notebooks" },
+    { include = "*.py", from = "./" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
