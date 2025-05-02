@@ -38,3 +38,10 @@ class MyQdrant:
             for content_id, embedding in zip(content_ids, embedding_vals)
         ]
     )
+    
+    def retrieve(self, query_vector):
+        resp=self.client.query_points(
+            collection_name=self.collection,
+            query=query_vector
+        )
+        return resp.points
