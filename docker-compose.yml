@@ -33,6 +33,27 @@ services:
       - QDRANT_ALLOW_RECOVERY=true
     restart: always
 
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "${OLLAMA_PORT}:11434"
+    restart: unless-stopped
+    entrypoint: >
+      sh -c "
+        ollama serve &
+        sleep 2 &&
+        ollama pull tinyllama &&
+        wait
+      "
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
+    volumes:
+      - ollama_data:/root/.ollama
+
 volumes:
   postgres-data:
   neo4j-logs:
@@ -40,3 +61,4 @@ volumes:
   neo4j-data:
   neo4j-plugins:
   qdrant-data:
+  ollama_data:
