@@ -1,7 +1,15 @@
 from neo4j import GraphDatabase
 import os
+from models import triplet
 from dotenv import load_dotenv
+from typing import List
+from pydantic import BaseModel
 
+
+class GraphRAGNode(BaseModel):
+    name: str
+    content_ids: List[int]
+    
 
 class Neo4j_Driver:
     def __init__(self):
@@ -35,6 +43,68 @@ class Neo4j_Driver:
             except Exception as e:
                 print(f"Error inserting relationship: {e}")
                 return None
+
+    def get_subgraphs(self, entity_names):
+        """
+        Gets all subgraphs of the overall database formed by all nodes 1-2 hops away from every node in entity_names.
+        
+        Args:
+            entity_names (list): List of entity names to search for
+            
+        Returns:
+            tuple: (nodes, relationships) where nodes is a list of GraphRAGNode objects and 
+            relationships is a list of tuples (source_name, relationship_type, target_name)
+        """
+        query = """
+            MATCH (e:entity)-[r1]-(n1)-[r2]-(n2)
+            WHERE toLower(e.name) IN [name IN $entity_names | toLower(name)]
+            RETURN e, r1 as r, n1, r2, n2
+            UNION
+            MATCH (e:entity)-[r]-(n1)
+            WHERE toLower(e.name) IN [name IN $entity_names | toLower(name)]
+            RETURN e, r, n1, null as r2, null as n2
+        """
+        
+        with self.driver.session() as session:
+            result = session.run(query, entity_names=entity_names)
+            
+            # Use set for efficient duplicate checking
+            node_names = set()
+            nodes: List[GraphRAGNode] = []
+            relationships = []
+
+            def add_node(neo4j_node) -> List[GraphRAGNode]:
+                """Helper function to add a node if it doesn't exist"""
+                name = neo4j_node["name"]
+                if name not in node_names:
+                    nodes.append(GraphRAGNode(
+                        name=name,
+                        content_ids=neo4j_node.get("content_ids", [])
+                    ))
+                    node_names.add(name)
+
+            for record in result:
+                # Add nodes
+                add_node(record["e"])
+                add_node(record["n1"])
+                if record["n2"]:
+                    add_node(record["n2"])
+                
+                # Add relationships
+                relationships.append((
+                    record["e"]["name"],
+                    record["r"].type,
+                    record["n1"]["name"]
+                ))
+                
+                if record["n2"]:
+                    relationships.append((
+                        record["n1"]["name"],
+                        record["r2"].type,
+                        record["n2"]["name"]
+                    ))
+
+            return nodes, relationships
 
     def close_connection(self):
             self.driver.close()
