@@ -35,3 +35,11 @@ def get_all_content(cur):
     content_ids=[row[0] for row in result]
     content= [row[1] for row in result]
     return content_ids, content
+
+def get_articles_by_ids(cur, article_ids):
+    cur.execute("""
+        SELECT id, topic, content
+        FROM articles
+        WHERE id = ANY(%s);
+    """, (article_ids,))
+    return cur.fetchall()

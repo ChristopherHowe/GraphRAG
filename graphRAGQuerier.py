@@ -6,6 +6,9 @@ import os
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 from ollama import OllamaClient
+from db_funcs import get_articles_by_ids, get_db_con
+from utils import jupyter_print_paragraph
+from langchain.prompts import PromptTemplate
 
 
 
@@ -44,9 +47,29 @@ class GraphRagQuerier:
         all_content_ids = list(set(qdrant_content_ids + neo4j_content_ids))
         print(f"All combined content IDs: {all_content_ids}")
 
-        query="What is bobs favorite ice cream"
-        print(self.llmModel.generate(query))
+        with get_db_con().cursor() as curr:
+            content_blocks=[article[2] for article in get_articles_by_ids(curr, all_content_ids)]
 
+        # Serialize the knowledge graph relationships
+        relationships_str = "\n".join([str(rel) for rel in relationships])
+
+        # Prepare context for LangChain
+        context = (
+            "Relevant Articles:\n"
+            + "\n---\n".join(content_blocks)
+            + "\n\nKnowledge Graph Relationships:\n"
+            + relationships_str
+        )
+
+        # Create a prompt template
+        prompt_template = PromptTemplate(
+            input_variables=["context", "question"],
+            template="Given the following context:\n{context}\n\nAnswer the question:\n{question}"
+        )
+
+        full_prompt = prompt_template.format(context=context, question=prompt)
+        response=self.llmModel.generate(full_prompt)
+        return full_prompt,response
 
     def _qdrant_inference(self, prompt):
         embedding=self.embedding_generator.encode(prompt)
