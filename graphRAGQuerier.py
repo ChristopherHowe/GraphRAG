@@ -5,9 +5,7 @@ from utils import Sentence_Extractor
 import os
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
+from ollama import OllamaClient
 
 
 
@@ -22,21 +20,32 @@ class GraphRagQuerier:
         self.er_extractor = ER_Extractor()
         self.sentence_extractor=Sentence_Extractor()
         self.embedding_generator=SentenceTransformer("all-MiniLM-L6-v2")
-        self.llmModel = AutoModelForCausalLM.from_pretrained("microsoft/phi-2", torch_dtype="auto", trust_remote_code=True)
-        self.llmTokenizer = AutoTokenizer.from_pretrained("microsoft/phi-2", trust_remote_code=True)
-
+        self.llmModel=OllamaClient()
     
     def query(self, prompt):
-        related_embeddings=self._qdrant_inference(prompt)
-        relationships, related_content= self._neo4j_inference(prompt)
-        inputs = self.llmTokenizer('''def print_prime(n):
-        """
-        Print all primes between 1 and n
-        """''', return_tensors="pt", return_attention_mask=False)
+        related_embeddings = self._qdrant_inference(prompt)
+        print(f"Related embeddings from Qdrant: {related_embeddings}")
+        
+        relationships, related_content = self._neo4j_inference(prompt)
+        print(f"Relationships from Neo4j: {relationships}")
+        print(f"Related content from Neo4j: {related_content}")
+        
+        top_qdrant = sorted(related_embeddings, key=lambda x: x[0], reverse=True)[:3]
+        print(f"Top Qdrant results: {top_qdrant}")
+        qdrant_content_ids = [payload['id'] for _, payload in top_qdrant]
+        print(f"Qdrant content IDs: {qdrant_content_ids}")
+        
+        top_neo4j = sorted(related_content.items(), key=lambda x: x[1], reverse=True)[:3]
+        print(f"Top Neo4j results: {top_neo4j}")
+        neo4j_content_ids = [content_id for content_id, _ in top_neo4j]
+        print(f"Neo4j content IDs: {neo4j_content_ids}")
 
-        outputs = self.llmModel.generate(**inputs, max_length=200)
-        text = self.llmTokenizer.batch_decode(outputs)[0]
-        print(text)
+        # Combine and deduplicate content IDs
+        all_content_ids = list(set(qdrant_content_ids + neo4j_content_ids))
+        print(f"All combined content IDs: {all_content_ids}")
+
+        query="What is bobs favorite ice cream"
+        print(self.llmModel.generate(query))
 
 
     def _qdrant_inference(self, prompt):
