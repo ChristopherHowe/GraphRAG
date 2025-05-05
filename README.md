@@ -47,3 +47,4 @@ This docker container also contains neo4j browser which can be accessed via http
 # Possible Issues
 Currently not merging or connecting nodes that are similar but not exact: example, Norman and Normans
 Add some kind of control to wait until ollama has pulled all the tensors before allowing backend to make hits to it.
+Introduce some kind of logic to check if there is not enough references

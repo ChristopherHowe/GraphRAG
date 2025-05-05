@@ -29,28 +29,20 @@ class OllamaClient:
     #     except requests.RequestException as e:
     #         return {"error": str(e)}
 
-    def generate(self, prompt, model="tinyllama", retries=3, backoff_factor=0.5):
+    def generate(self, prompt, model="llama2", retries=3, backoff_factor=0.5):
         """Generate a response from the model with retry logic and streaming support."""
 
-        payload = {"model": model, "prompt": prompt}
+        payload = {"model": model, "prompt": prompt, "stream": False}
         for attempt in range(retries):
             try:
                 response = requests.post(
                     f"{self.base_url}/api/generate",
                     json=payload,
-                    stream=True
+                    stream=False  # This can also be omitted, as it's not needed for non-streamed
                 )
                 response.raise_for_status()
-                # Collect only the 'response' field from each streamed JSON line
-                result = ""
-                for line in response.iter_lines():
-                    if line:
-                        try:
-                            data = json.loads(line.decode("utf-8"))
-                            result += data.get("response", "")
-                        except Exception:
-                            continue
-                return result
+                data = response.json()
+                return data.get("response", "")
             except requests.RequestException as e:
                 print(f"Retrying attempt: {attempt}")
                 if attempt < retries - 1:

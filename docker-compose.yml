@@ -43,7 +43,7 @@ services:
       sh -c "
         ollama serve &
         sleep 2 &&
-        ollama pull tinyllama &&
+        ollama pull llama2 &&
         wait
       "
     deploy:
