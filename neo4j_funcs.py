@@ -106,5 +106,25 @@ class Neo4j_Driver:
 
             return nodes, relationships
 
+    def remove_node_by_name(self, node_name: str):
+        """Deletes ALL nodes with name `node_name`"""
+        query = """
+            MATCH (n {name: $node_name})
+            WITH n
+            DETACH DELETE n
+            RETURN COUNT(n) AS deleted_count
+        """
+        with self.driver.session() as session:
+            try:
+                result = session.run(query, node_name=node_name)
+                record = result.single(strict=True)
+                deleted_count = record["deleted_count"]
+                if deleted_count > 1:
+                    print(f"WARN {deleted_count} nodes were deleted.")
+                return deleted_count > 0
+            except Exception as e:
+                print(f"Error removing node: {e}")
+                return False
+
     def close_connection(self):
             self.driver.close()
