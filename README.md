@@ -43,8 +43,12 @@ This docker container also contains neo4j browser which can be accessed via http
 [Linq Embedd Model](https://huggingface.co/Linq-AI-Research/Linq-Embed-Mistral), chosen because at top of [embedding leaderboard](https://huggingface.co/spaces/mteb/leaderboard)
 [Qdrant Guide on how to set up graphRAG](https://qdrant.tech/documentation/examples/graphrag-qdrant-neo4j)
 [Phi 2 LLM Model](https://huggingface.co/microsoft/phi-2)
+[Ollama2 Model](https://www.llama.com/llama2/)
 
 # Possible Issues
 Currently not merging or connecting nodes that are similar but not exact: example, Norman and Normans
 Add some kind of control to wait until ollama has pulled all the tensors before allowing backend to make hits to it.
 Introduce some kind of logic to check if there is not enough references
+
+# Notes
+Llama2 takes about 6 gb of VRAM
