@@ -1,10 +1,10 @@
-# GraphRAG Exploration
+# HybridRAG Exploration
 
 ## Overview
-GraphRAG Exploration is a hybrid Retrieval-Augmented Generation (RAG) system that enhances the quality of responses from large language models (LLMs) by combining vector-based and knowledge graph-based retrieval methods. This approach minimizes hallucinations and improves the factual accuracy of model outputs.
+This project is an exploration into hybridRAG architectures. The system enhances the quality of responses from large language models (LLMs) by combining vector-based and knowledge graph-based retrieval methods. This approach minimizes hallucinations and improves the factual accuracy of model outputs.
 
 ## Project Architecture
-GraphRAG Exploration is built with a modular, service-oriented architecture using Docker containers:
+It's is built with a modular, service-oriented architecture using Docker containers:
 - **Relational Database (Postgres)**: Stores raw text data and metadata.
 - **Vector Database (Qdrant)**: Stores vector embeddings of text chunks for semantic search.
 - **Knowledge Graph (Neo4j)**: Stores entities and their relationships extracted from text data.
