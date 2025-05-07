@@ -73,6 +73,7 @@ class GraphRagQuerier:
 
     def _qdrant_inference(self, prompt):
         embedding=self.embedding_generator.encode(prompt)
+        print(embedding)
         vectors=self.qdrant.retrieve(embedding)
         return [(vector.score, vector.payload) for vector in vectors]
          
