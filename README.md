@@ -24,7 +24,7 @@ docker compose up -d
 
 2. Set Up Python Environment:
 ```bash
-conda create -n GraphRAG python=3.8
+conda create -n GraphRAG
 conda activate GraphRAG
 pip install -r requirements.txt
 ```
