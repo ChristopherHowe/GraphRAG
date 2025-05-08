@@ -1,6 +1,5 @@
 from neo4j import GraphDatabase
 import os
-from models import triplet
 from dotenv import load_dotenv
 from typing import List
 from pydantic import BaseModel

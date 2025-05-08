@@ -1,8 +1,5 @@
-from nltk.tokenize import sent_tokenize
-import nltk
 from typing import List
 from models import triplet
-from torch.utils.data import Dataset
 from transformers import pipeline
 
 
