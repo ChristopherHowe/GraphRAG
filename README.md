@@ -42,6 +42,30 @@ docker volume prune --all
 docker compose up -d
 ```
 
+### Example `.env` file
+```bash
+# PostgreSQL Configuration
+DB_USER=postgresUser
+DB_PASSWORD=postgresPass
+DB_NAME=GraphRag
+DB_PORT=5432
+
+# Neo4j Configuration
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=neo4jPass
+NEO4J_HTTP_PORT=7474
+NEO4J_BOLT_PORT=7687
+
+# QDrant Configuration
+QDRANT_PORT=6333
+QDRANT_COLLECTION_NAME=graphRAG
+QDRANT_VECTOR_SIZE=384
+
+# Ollama Configuration
+OLLAMA_PORT=11434
+OLLAMA_HOST=localhost
+```
+
 ## Data Ingestion
 Data ingestion is managed through the `ingestion.ipynb` notebook and involves three main steps:
 1. **Relational Database Ingestion**: Raw text data is loaded into the PostgreSQL database, including articles, questions, and metadata.
