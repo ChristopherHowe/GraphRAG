@@ -3,13 +3,13 @@
 ## Overview
 This project is an exploration into hybridRAG architectures. The system enhances the quality of responses from large language models (LLMs) by combining vector-based and knowledge graph-based retrieval methods. This approach minimizes hallucinations and improves the factual accuracy of model outputs.
 
-![Prompt and Response Example](readme-assets/prompt_example.png)
+![Prompt and Response Example](readme-assets/example-output.png)
 
 
 ## Project Architecture
 It's is built with a modular, service-oriented architecture using Docker containers:
 
-![HybridRAG Architecture Diagram](readme-assets/architecture_diagram.png)
+![HybridRAG Architecture Diagram](readme-assets/model-systems.png)
 
 - **Relational Database (Postgres)**: Stores raw text data and metadata.
 - **Vector Database (Qdrant)**: Stores vector embeddings of text chunks for semantic search.
@@ -77,7 +77,7 @@ Data ingestion is managed through the `ingestion.ipynb` notebook and involves th
 1. **Relational Database Ingestion**: Raw text data is loaded into the PostgreSQL database, including articles, questions, and metadata.
 2. **Vector Embedding Generation**: Each text block is converted into a vector using a pre-trained model, and these vectors are stored in Qdrant.
 3. **Knowledge Graph Creation**: Entities and relationships are extracted from text using the Rebel model, and these are stored in Neo4j.
-![Knowledge Graph Example](readme-assets/graph_example.png)
+![Knowledge Graph Example](readme-assets/example-nodes.png)
 
 
 ## Query Execution
