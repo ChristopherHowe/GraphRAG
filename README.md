@@ -7,8 +7,6 @@ This project is an exploration into hybridRAG architectures. The system enhances
 
 
 ## Project Architecture
-It's is built with a modular, service-oriented architecture using Docker containers:
-
 ![HybridRAG Architecture Diagram](readme-assets/model-systems.png)
 
 - **Relational Database (Postgres)**: Stores raw text data and metadata.
